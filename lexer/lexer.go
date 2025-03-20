@@ -1,14 +1,22 @@
 package lexer
 
-import "book/monkeyLang/token"
+import (
+	"book/monkeyLang/ast"
+	"book/monkeyLang/token"
+)
 
 
 type Lexer struct {
 	input        string
 	position     int  // current position in input (points to current char)
-	readPosition int  // current reading position in input (after current char)
+	readPosition int  // current reading position in input (after current char) .
 	ch           byte // current char under examination
 }
+
+type (
+    prefixParseFn func() ast.Expression
+    infixParseFn func(ast.Expression) ast.Expression
+)
 
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
@@ -124,6 +132,7 @@ func (l *Lexer) readNumber() string {
 	}
 	return l.input[position:l.position]
 }
+
 
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
